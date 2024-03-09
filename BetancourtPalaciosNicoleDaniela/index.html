@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quién quiere ser millonario?</title>
+</head> 
+    <body>
+        <h1>¿Quién quiere ser millonario?</h1>
+        <P>Hola, recuerda que debes responder las opciones en <span style="font-size: 1em;">MAYÚSCULA</span>, cada opción correcta te dará 1 punto</P> <br>
+
+         <h3>Pregunta Numero: <span id="PreguntaActual">1</span></h3>
+         <p id="puntos">Tus puntos: <span id="puntoAcumul">0</span> </p> <br>
+         <p id="pregunta">Pregunta:</p>
+         <div id="opciones"></div>
+         <input type="text" id="respuesta" maxlength="1">
+         <input type="submit" value="Enviar" onclick="Contestar()"> <br>
+         <button onclick="R50_50()">Usar 50/50</button> <br>
+         <button onclick="RdoblePuntuacion()">Usar Doble Puntuación</button> <br>
+         <button onclick="RPista()">Usar Pista</button> <br>
+
+    
+        <script>
+            
+           var cuestionario = [
+            {
+                pregunta: "¡Cual es la formula quimica del agua?",
+                opciones:["A. H1N1 / B. H2O / C. GH5 / D. Ninguna de las anteriores /"],
+                respuesta: "B",
+                Op50_50: ["B. H2O", "C. GH5"],
+                OpPista: "Es la combinación de dos elementos, uno de ellos es el hidrógeno."
+            } ,
+            {
+                pregunta: "¿Cual es la capital de Brasil?",
+                opciones:["A. Rio de Janeiro / B. Bogotá  / C. Brasilia  / D. Buenos Aires /"],
+                respuesta: "C",
+                Op50_50: ["B. Bogotá", "C. Brasilia"],
+                OpPista: "Es una de las ciudades más modernas en términos de arquitectura."
+            } ,
+            {
+                pregunta: "¿Cual es el rio más largo del mundo?",
+                opciones:["A. Nilo / B. Amazonas / C. Misisipi / D. Yangtsé /"],
+                respuesta: "B",
+                Op50_50: ["B. Amazonas", "D. Yangtsé"],
+                OpPista: "Se encuentra en América del Sur."
+            } ,
+            {
+                pregunta: "¿Que famoso cientifico descubrió la teoria de la relatividad?",
+                opciones:["A. Marie Curie / B. Charles Darwin / C. Isaac Newton / D. Albert Einstein /"],
+                respuesta: "D",
+                Op50_50: ["C. Isaac Newton", "D. Albert Einstein"],
+                OpPista: "Este científico es conocido por su famosa ecuación E=mc^2."
+            } ,
+            {
+                pregunta: "¿Cuál es el libro más vendido en el mundo?",
+                opciones:["A. El Señor de los Anillos / B. Harry Potter / C. Don Quijote de la Mancha / D. La Biblia /"],
+                respuesta: "D",
+                Op50_50: ["B. Harry Potter", "D. La Biblia"],
+                OpPista: "Este libro es considerado sagrado por varias religiones."
+            } ,
+            {
+                pregunta: "¿Cuantos dias tiene un mes?",
+                opciones:["A. 30 / B. 31 / C. 29 / D. Todas las anteriores /"],
+                respuesta: "D",
+                Op50_50: ["A. 30", "D. Todas las anteriores"],
+                OpPista: "Depende del mes y si el año es bisiesto o no."
+            } ,
+            {
+                pregunta: "¿Cuál es el planeta más grande del sistema solar?",
+                opciones:["A. Tierra / B. Marte / C. Júpiter / D. Saturno /"],
+                respuesta: "C",
+                Op50_50: ["C. Júpiter", "D. Saturno"],
+                OpPista: "Este planeta es conocido por sus bandas de nubes coloridas y su Gran Mancha Roja."
+            } ,
+            {
+                pregunta: "¿Cuál es la montaña más alta del mundo?",
+                opciones:["A. K2 / B. Mont Blanc / C. Monte Everest / D. Kilimanjaro /"],
+                respuesta: "C",
+                Op50_50: ["B. Mont Blanc", "C. Monte Everest"],
+                OpPista: "Esta montaña se encuentra en la cordillera del Himalaya."
+            } ,
+            {
+               pregunta: "¿Quién pintó la 'Mona Lisa'?",
+               opciones:["A. Vincent Van Gogh / B. Pablo Picasso / C. Leonardo da Vinci / D. Michelangelo /"],
+               respuesta: "C",
+               Op50_50: ["C. Leonardo da Vinci", "D. Michelangelo"],
+               OpPista: "Este artista es un famoso polímata del Renacimiento italiano."
+            },
+            {
+                pregunta: "¿En qué año comenzó la Segunda Guerra Mundial?",
+                opciones:["A. 1914 / B. 1939 / C. 1941 / D. 1945 /"],
+                respuesta: "B",
+                Op50_50: ["B. 1939", "C. 1941"],
+                OpPista: "Comenzó el mismo año en que se estrenó la película 'El mago de Oz'."
+            } 
+           ];
+
+           var ayudasUsadas = {
+           "50/50": false,
+           "doblePuntuacion": false,
+           "pista": false
+           };
+
+           function R50_50() { //Esta opcion muestra 1 respuesta correcta y 1 incorrecta
+           if (!ayudasUsadas["50/50"]) {
+            ayudasUsadas["50/50"] = true;
+           var preguntaActual = cuestionario[parseInt(document.getElementById("PreguntaActual").textContent) - 1];
+            preguntaActual.opciones = preguntaActual.Op50_50;
+            mostrarPregunta(parseInt(document.getElementById("PreguntaActual").textContent) - 1);
+           } else {
+           alert("Ya has usado la regla 50/50 en esta partida.");
+           }
+          }
+
+           var doblePuntuacionActiva = false;
+            function RdoblePuntuacion() { //Esta opcion suma 2 puntos en vez de 1
+           if (!ayudasUsadas["doblePuntuacion"]) {
+           ayudasUsadas["doblePuntuacion"] = true;
+           doblePuntuacionActiva = true;
+          } else {
+            alert("Ya has usado la regla de doble puntuación en esta partida.");
+           }
+          }
+ 
+            function RPista() { //Se da una pista de la respuesta correcta
+           if (!ayudasUsadas["pista"]) {
+            ayudasUsadas["pista"] = true;
+            var preguntaActual = cuestionario[parseInt(document.getElementById("PreguntaActual").textContent) - 1];
+             alert("Pista: " + preguntaActual.OpPista);
+           } else {
+            alert("Ya has usado la regla de pista en esta partida.");
+           }
+           }
+  
+            function preAleatorio(array) { //Se da la respuesta en aleatorio, no en orden
+           array.sort(() => Math.random() - 0.5);
+            } preAleatorio(cuestionario);
+
+            var juegoTerminado = false; //Para que no siga sumando puntos al terminar el juego
+
+            function Contestar() {
+            if (juegoTerminado) {
+             alert("El juego ya ha terminado.");
+             return;
+            }
+              var contadorPreg = parseInt(document.getElementById("PreguntaActual").textContent) - 1;
+              var respuesta = document.getElementById("respuesta").value;
+              var mensaje = "";
+             if (respuesta == cuestionario[contadorPreg].respuesta) {
+              mensaje = "Correcto";
+              sumarPuntos();
+            } else {
+              mensaje = "Incorrecto";
+            }
+             if (contadorPreg < cuestionario.length - 1) { 
+             cambiarPregunta();
+             mostrarPregunta(contadorPreg + 1);
+            } else {
+              mensaje = "¡Juego terminado! Tus puntos finales fueron: " + document.getElementById("puntoAcumul").textContent;
+              juegoTerminado = true;
+            }
+             alert(mensaje);
+           } mostrarPregunta(0);
+
+           function sumarPuntos(){ 
+            var puntos = parseInt(document.getElementById("puntoAcumul").textContent);
+            puntos += doblePuntuacionActiva ? 2 : 1;
+           document.getElementById("puntoAcumul").textContent = puntos;
+           doblePuntuacionActiva = false;
+           }
+    
+           function cambiarPregunta(){
+             var numeroPregunta=parseInt(document.getElementById("PreguntaActual").textContent);
+             numeroPregunta++;
+             document.getElementById("PreguntaActual").textContent = numeroPregunta;
+           }
+    
+           function mostrarPregunta(p){
+
+            document.getElementById("pregunta").textContent=cuestionario[p].pregunta;
+            var opciones = "Opciones: ";
+            for (var i = 0; i<cuestionario[p].opciones.length;i++){
+                opciones += cuestionario[p].opciones[i] + " ";
+            }
+            document.getElementById("opciones").textContent = opciones;
+           }
+        
+        </script>
+    </body>
+    </html>
+    
+
