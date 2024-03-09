@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quién quiere ser millonario?</title>
+    <style>
+        /* Estilos CSS para el diseño de la página */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+        #container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        #question {
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .option {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .option:hover {
+            background-color: #0056b3;
+        }
+        #doublePointsButton, #fiftyFiftyButton, #hintButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #doublePointsButton:disabled, #fiftyFiftyButton:disabled, #hintButton:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>¿Quién quiere ser millonario?</h1>
+        <!-- Contenedor donde se mostrarán las preguntas -->
+        <div id="questions">
+            
+        </div>
+        <!-- Elemento para mostrar la puntuación -->
+        <div id="score">Puntuación: <span id="points">0</span></div>
+        <!-- Botones de las diferentes funcionalidades -->
+        <button id="doublePointsButton" onclick="doublePoints()">Duplicar Puntuación</button>
+        <button id="fiftyFiftyButton" onclick="fiftyFifty()">50/50</button>
+        <button id="hintButton" onclick="getHint()">Pista</button>
+    </div>
+
+    <script>
+        // Variables para el juego
+        let score = 0;
+        let doublePointsUsed = false;
+        let fiftyFiftyUsed = false;
+        let hintUsed = false;
+        // Array de preguntas y respuestas
+        const questions = [
+            {
+                question: '¿Cuál es el único jugador que ha ganado 5 Balones de Oro?',
+                options: ['a) Lionel Messi', 'b) Cristiano Ronaldo', 'c) Pelé', 'd) Diego Maradona'],
+                correctIndex: 0,
+                hint: 'Este jugador argentino es conocido como "La Pulga".'
+            },
+            {
+                question: '¿Quién es el máximo goleador de la historia de la Champions League?',
+                options: ['a) Lionel Messi', 'b) Cristiano Ronaldo', 'c) Raúl González', 'd) Robert Lewandowski'],
+                correctIndex: 1,
+                hint: 'Este jugador portugués ha jugado para clubes como Manchester United, Real Madrid y Juventus.'
+            },
+            {
+                question: '¿En qué año Argentina ganó su primer Mundial de fútbol?',
+                options: ['a) 1978', 'b) 1982', 'c) 1986', 'd) 1990'],
+                correctIndex: 0,
+                hint: 'Este torneo se llevó a cabo en Argentina.'
+            },
+            {
+                question: '¿Quién es el máximo goleador en la historia de la selección brasileña?',
+                options: ['a) Pelé', 'b) Romário', 'c) Ronaldo Nazário', 'd) Neymar'],
+                correctIndex: 3,
+                hint: 'Este jugador también es conocido como "O Fenômeno".'
+            },
+            {
+                question: '¿Cuál de estos equipos nunca ha ganado la Copa del Mundo?',
+                options: ['a) Alemania', 'b) Holanda', 'c) Inglaterra', 'd) Portugal'],
+                correctIndex: 1,
+                hint: 'Este país europeo es conocido por su famoso color naranja en su uniforme.'
+            },
+            {
+                question: '¿En qué país se celebró la primera Copa del Mundo de la FIFA en 1930?',
+                options: ['a) Brasil', 'b) Uruguay', 'c) Argentina', 'd) Italia'],
+                correctIndex: 1,
+                hint: 'Este país sudamericano es conocido por sus éxitos en el fútbol.'
+            },
+            {
+                question: '¿Cuál de estos jugadores nunca ha ganado la Bota de Oro de Europa?',
+                options: ['a) Thierry Henry', 'b) Zinedine Zidane', 'c) Luis Suárez', 'd) Fernando Torres'],
+                correctIndex: 1,
+                hint: 'Este jugador francés es considerado uno de los mejores centrocampistas de todos los tiempos.'
+            },
+            {
+                question: '¿Cuántas Copas del Mundo ha ganado la selección de Italia?',
+                options: ['a) 2', 'b) 3', 'c) 4', 'd) 5'],
+                correctIndex: 2,
+                hint: 'Este país europeo es conocido por su defensa fuerte y tácticas astutas.'
+            },
+            {
+                question: '¿Quién fue el máximo goleador del Mundial de fútbol de 2018?',
+                options: ['a) Antoine Griezmann', 'b) Kylian Mbappé', 'c) Harry Kane', 'd) Romelu Lukaku'],
+                correctIndex: 3,
+                hint: 'Este jugador belga juega para el Inter de Milán en la Serie A italiana.'
+            },
+            {
+                question: '¿Cuál de estos países ha ganado más Copas América en la historia?',
+                options: ['a) Argentina', 'b) Brasil', 'c) Uruguay', 'd) Chile'],
+                correctIndex: 0,
+                hint: 'Este país sudamericano es conocido por su rivalidad futbolística con Brasil.'
+            }
+        ];
+
+        // Función para barajar aleatoriamente las preguntas
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Función para inicializar las preguntas en la página
+        function initializeQuestions() {
+            shuffle(questions);
+            const questionsContainer = document.getElementById('questions');
+            questions.forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.id = 'question_' + index;
+                const questionParagraph = document.createElement('p');
+                questionParagraph.textContent = 'Pregunta ' + (index + 1) + ': ' + questionData.question;
+                questionDiv.appendChild(questionParagraph);
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                questionData.options.forEach((option, optionIndex) => {
+                    const optionButton = document.createElement('button');
+                    optionButton.className = 'option';
+                    optionButton.textContent = option;
+                    optionButton.onclick = function() {
+                        checkAnswer(index, optionIndex, questionData.correctIndex);
+                    };
+                    optionsDiv.appendChild(optionButton);
+                });
+                questionDiv.appendChild(optionsDiv);
+                questionsContainer.appendChild(questionDiv);
+            });
+        }
+
+        // Función para verificar la respuesta seleccionada
+        function checkAnswer(questionIndex, selectedOptionIndex, correctOptionIndex) {
+            if (selectedOptionIndex === correctOptionIndex) {
+                score += doublePointsUsed ? 20 : 10;
+                document.getElementById('points').innerText = score;
+            }
+            
+            document.getElementById('question_' + questionIndex).remove();
+        }
+
+        // Función para activar la funcionalidad de duplicar puntos
+        function doublePoints() {
+            doublePointsUsed = true;
+            document.getElementById('doublePointsButton').disabled = true;
+        }
+
+        // Función para activar la funcionalidad de 50/50
+        function fiftyFifty() {
+            fiftyFiftyUsed = true;
+            const currentQuestionDiv = document.querySelector('#questions > div:first-child');
+            const optionButtons = currentQuestionDiv.querySelectorAll('.option');
+            const correctOptionIndex = questions[currentQuestionDiv.id.split('_')[1]].correctIndex;
+            let wrongOptionIndex;
+
+            do {
+                wrongOptionIndex = Math.floor(Math.random() * optionButtons.length);
+            } while (wrongOptionIndex === correctOptionIndex);
+
+            optionButtons.forEach((button, index) => {
+                if (index !== correctOptionIndex && index !== wrongOptionIndex) {
+                    button.style.backgroundColor = '#ddd'; 
+                    button.style.color = '#666'; 
+                    button.disabled = true; 
+                }
+            });
+            document.getElementById('fiftyFiftyButton').disabled = true; 
+        }
+
+        // Función para mostrar una pista
+        function getHint() {
+            hintUsed = true;
+            const currentQuestion = questions.find((_, index) => index === 0);
+            alert('Pista: ' + currentQuestion.hint);
+            document.getElementById('hintButton').disabled = true;
+        }
+
+        // Inicializa las preguntas en la página
+        initializeQuestions();
+    </script>
+</body>
+</html>
