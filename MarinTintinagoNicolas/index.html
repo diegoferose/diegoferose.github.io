@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quién quiere ser millonario?</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>¿Quién quiere ser millonario?</h1>
+    <h3>Pregunta No <span id="contadorPregunta">1</span></h3>
+    <h3>Puntos: <span id="puntos">0</span></h3>
+    <div id="pregunta">pregunta</div>
+    <div id="opciones"></div>
+    <br>
+    <input type="text" id="respuesta">
+    <button onclick="contestar()">contestar</button>
+    <button onclick="cincuentaCincuenta()" id="cincuentaCincuenta">50/50</button>
+    <button onclick="activarDoblePuntuacion()" id="doblePuntuacion">Doble Puntuación</button>
+
+    <script>
+        var questionario = [ 
+        
+        {
+        pregunta: "¿Cuál es la capital de Colombia?",
+        opciones: ["Bogotá", "Medellín", "Cali", "Cartagena"],
+        respuesta: "Bogotá"
+    },
+    {
+        pregunta: "¿En qué departamento se encuentra el Parque Nacional Natural Tayrona?",
+        opciones: ["Antioquia", "Magdalena", "Cundinamarca", "Valle del Cauca"],
+        respuesta: "Magdalena"
+    },
+    {
+        pregunta: "¿Cuál es el río más largo de Colombia?",
+        opciones: ["Magdalena", "Cauca", "Amazonas", "Orinoco"],
+        respuesta: "Magdalena"
+    },
+    {
+        pregunta: "¿Qué ciudad colombiana es conocida como la 'Ciudad de la Eterna Primavera'?",
+        opciones: ["Medellín", "Bogotá", "Cali", "Cartagena"],
+        respuesta: "Medellín"
+    },
+    {
+        pregunta: "¿Cuál es el plato típico de la región caribe colombiana?",
+        opciones: ["Bandeja paisa", "Sancocho", "Arepa", "Cazuela de mariscos"],
+        respuesta: "Cazuela de mariscos"
+    },
+    {
+        pregunta: "¿En qué año se firmó el acuerdo de paz entre el gobierno colombiano y las FARC?",
+        opciones: ["2016", "2017", "2018", "2019"],
+        respuesta: "2016"
+    },
+    {
+        pregunta: "¿Cuál es el nombre de la famosa ciudad amurallada en la costa caribe de Colombia?",
+        opciones: ["Barranquilla", "Santa Marta", "Cartagena", "Bucaramanga"],
+        respuesta: "Cartagena"
+    },
+    {
+        pregunta: "¿Qué escritor colombiano ganó el Premio Nobel de Literatura en 1982?",
+        opciones: ["Gabriel García Márquez", "Fernando Vallejo", "Laura Esquivel", "Mario Vargas Llosa"],
+        respuesta: "Gabriel García Márquez"
+    },
+    {
+        pregunta: "¿Cuál es el deporte más popular en Colombia?",
+        opciones: ["Fútbol", "Ciclismo", "Voleibol", "Baloncesto"],
+        respuesta: "Fútbol"
+    },
+    {
+        pregunta: "¿En qué región de Colombia se encuentra el famoso Cañón del Chicamocha?",
+        opciones: ["Andina", "Caribe", "Pacífica", "Orinoquía"],
+        respuesta: "Andina"
+    }
+
+        ];
+
+           
+        
+
+        var preguntasMostradas = [];
+        var indicePreguntaActual = 0;
+        var puntos = 0;
+        var cincuentaCincuentaUsado = false;
+        mostrarPregunta();
+
+        function obtenerPreguntaAleatoria() {
+            var preguntasDisponibles = questionario.filter(function(pregunta, indice) {
+                return !preguntasMostradas.includes(indice);
+            });
+
+            if (preguntasDisponibles.length > 0) {
+                var indiceAleatorio = Math.floor(Math.random() * preguntasDisponibles.length);
+                var preguntaAleatoria = preguntasDisponibles[indiceAleatorio];
+                preguntasMostradas.push(questionario.indexOf(preguntaAleatoria));
+                return preguntaAleatoria;
+            } else {
+                return null;
+            }
+        }
+
+        function mostrarPregunta() {
+            var preguntaActual = obtenerPreguntaAleatoria();
+            if (preguntaActual) {
+                document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+                var opcionesHtml = "";
+                preguntaActual.opciones.forEach(function (opcion, index) {
+                    opcionesHtml += `<button onclick="contestar('${opcion}')">${opcion}</button>`;
+                });
+                document.getElementById("opciones").innerHTML = opcionesHtml;
+            } else {
+                document.getElementById("pregunta").textContent = "¡Felicidades! Has respondido todas las preguntas.";
+                document.getElementById("opciones").innerHTML = "";
+                document.getElementById("respuesta").style.display = 'none';
+                document.querySelector("button[onclick='contestar()']").style.display = 'none';
+            }
+        }
+
+     var doblePuntuacionUsado = false;
+var doblePuntuacionActivo = false;
+
+function activarDoblePuntuacion() {
+    if (!doblePuntuacionUsado) {
+        doblePuntuacionActivo = true;
+        doblePuntuacionUsado = true;
+        document.getElementById("doblePuntuacion").disabled = true;
+        alert("¡Has activado la Doble Puntuación! Si aciertas la próxima pregunta, tus puntos se duplicarán.");
+    }
+}
+
+function contestar(opcionSeleccionada) {
+    var preguntaActual = questionario[preguntasMostradas[indicePreguntaActual]];
+    if (opcionSeleccionada.toLowerCase() === preguntaActual.respuesta.toLowerCase()) {
+        var puntosGanados = 10;
+        if (doblePuntuacionActivo) {
+            puntosGanados *= 2;
+            doblePuntuacionActivo = false; // Desactivar doble puntuación después de usarla
+        }
+        puntos += puntosGanados;
+        document.getElementById("puntos").textContent = puntos;
+        alert(`¡Respuesta correcta! Has ganado ${puntosGanados} puntos.`);
+    } else {
+        alert(`Respuesta incorrecta. La respuesta correcta era: ${preguntaActual.respuesta}`);
+        if (doblePuntuacionActivo) {
+            doblePuntuacionActivo = false; // Desactivar doble puntuación si la respuesta es incorrecta
+        }
+    }
+    // Continuar con la siguiente pregunta independientemente de si la respuesta fue correcta o no
+    indicePreguntaActual++;
+    mostrarPregunta();
+}
+
+        function cincuentaCincuenta() {
+            if (!cincuentaCincuentaUsado) {
+                var preguntaActual = questionario[preguntasMostradas[indicePreguntaActual]];
+                var opciones = preguntaActual.opciones.filter(function(opcion) {
+                    return opcion !== preguntaActual.respuesta;
+                });
+
+                // Reducimos aleatoriamente las opciones incorrectas a una
+                while (opciones.length > 1) {
+                    opciones.splice(Math.floor(Math.random() * opciones.length), 1);
+                }
+
+                // Mostramos la respuesta correcta y la incorrecta restante
+                var opcionesFinales = [preguntaActual.respuesta, opciones[0]];
+                var opcionesHtml = "";
+                opcionesFinales.forEach(function (opcion) {
+                    opcionesHtml += `<button onclick="contestar('${opcion}')">${opcion}</button>`;
+                });
+                document.getElementById("opciones").innerHTML = opcionesHtml;
+
+                cincuentaCincuentaUsado = true;
+                document.getElementById("cincuentaCincuenta").disabled = true;
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+   

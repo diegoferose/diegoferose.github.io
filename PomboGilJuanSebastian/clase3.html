@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase 3</title>
+</head>
+
+<body>
+    <h1>¿Quien quiere ser millonario?</h1>
+    <h3>Puntaje: <span id="puntaje"></span></h3>
+    <h3>Pregunta: <span id="pregunta"></span></h3>
+    <h4>Opciones: <span id="opciones"></span></h4>
+    <input type="text" id="cajaRespuesta">
+    <br>
+    <button id="check"  onclick="SubmitAns()">Verificar</button>
+    <button id="check"  onclick="mitadMitad()">50/50</button>
+    <button id="check"  onclick="dobleP()">Doble puntuacion</button>
+
+    <h2><span id="verificado"></span></h2>
+    <script>
+
+
+        var cajaMillon = [
+            {
+                pregunta: "¿Cual era el nombre completo de Simon Bolivar?",
+                opciones: ["Simon Bolivar de Pava", "Simon Bolivar sabanilla de los Cautes", "Simón José Antonio de la Santísima Trinidad Bolívar Ponte y Palacios Blanco", "Simon Bolivar"],
+                respuesta: "3",
+            },
+            {
+                pregunta: "¿A que pais llego Cristobal Colon en su primer viaje?",
+                opciones: ["San Salvador", "Venezuela", "Panama", "Mexico"],
+                respuesta: "1",
+
+            },
+            {
+                pregunta: "¿Cómo se llama la cordillera costera más alta del mundo ubicada en Colombia?",
+                opciones: ["Cordillera de los Andes", "Cordillera Central", "Cordillera Occidental"],
+                respuesta: "4",
+
+            },
+            {
+                pregunta: "¿Cómo se llama la cumbre más alta de Colombia?",
+                opciones: ["Pico Cristóbal Colón", "Nevado del Huila", "Nevado del Ruiz","Pico Simón Bolívar"],
+                respuesta: "1",
+
+            },
+            {
+                pregunta: "¿Cuántos parques nacionales existen en Colombia?",
+                opciones: ["10", "20", "30", "40"],
+                respuesta: "2",
+
+            },
+            {
+                pregunta: "¿Qué porcentaje de la selva amazónica se encuentra en Colombia?",
+                opciones: ["5%", "10%", "15%","20%"],
+                respuesta: "1",
+
+            },
+            {
+                pregunta: "¿Cuál es el lago más grande de Colombia?",
+                opciones: ["Lago de Tota", "Lago Calima", "Lago de Guatavita", "Lago de Cocha"],
+                respuesta: "1",
+
+            },
+            {
+                pregunta: "¿Cuántos departamentos tiene Colombia?",
+                opciones: ["28", "30", "32","34"],
+                respuesta: "3",
+
+            },
+            {
+                pregunta: "¿Cuál es el río más grande de Colombia?",
+                opciones: ["Río Magdalena", "Río Cauca", "Río Amazonas", "Río Orinoco"],
+                respuesta: "1",
+
+            },
+            {
+                pregunta: "¿Qué posición ocupa Colombia a nivel mundial en cuanto a su superficie?",
+                opciones: ["10ª", "20ª", "30ª", "40ª"],
+                respuesta: "2",
+
+            },
+        ]
+        
+        var contador = 0;
+        preguntas(0);
+
+        function preguntas(p) {
+            document.getElementById("pregunta").textContent = cajaMillon[p].pregunta;
+            var opcionesHTML = "";
+            for (var i = 0; i < 4; i++) {
+                opcionesHTML += "<br>" + (i + 1) + ") " + cajaMillon[contador].opciones[i] + "<br>";
+            }
+            document.getElementById("opciones").innerHTML = opcionesHTML;
+        };
+
+       
+
+        function SubmitAns() {
+
+
+            
+            if ( document.getElementById("cajaRespuesta").value === cajaMillon[contador].respuesta) {
+                document.getElementById("verificado").textContent = "Correcto!"
+                document.getElementById("puntaje").textContent++
+                
+            }else {
+                document.getElementById("verificado").textContent = "Incorrecto!"
+                
+
+            }
+            contador++;
+            preguntas(contador);
+           
+
+        }
+
+
+
+        function dobleP(){
+
+            if ( document.getElementById("cajaRespuesta").value === cajaMillon[contador].respuesta) {
+                document.getElementById("verificado").textContent = "Correcto!"
+                document.getElementById("puntaje").textContent++
+                document.getElementById("puntaje").textContent++
+                
+            }else {
+                document.getElementById("verificado").textContent = "Incorrecto!"
+                document.getElementById("puntaje").textContent--
+                
+
+            }
+            contador++;
+            preguntas(contador);
+
+
+        }
+        
+        
+
+
+
+
+
+    </script>
+</body>
+
+</html>

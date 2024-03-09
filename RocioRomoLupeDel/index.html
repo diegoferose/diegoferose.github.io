@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>¿Quién quiere ser millonario?</title>
+</head>
+<body>
+    <h1>¿Quién quiere ser millonario?</h1>
+    <div id="pregunta"></div>
+    <button id="respuesta1"></button>
+    <button id="respuesta2"></button>
+    <button id="respuesta3"></button>
+    <button id="respuesta4"></button>
+
+    <script>
+        var preguntas = [
+            {
+                pregunta: "¿Cuál es la capital de Colombia?",
+                respuestas: ["Bogotá", "Medellín", "Cali", "Barranquilla"],
+                correcta: 0
+            },
+            {
+                pregunta: "¿Cuál es el animal más grande del mundo?",
+                respuestas: ["Elefante africano", "Ballena azul", "Dinosaurio", "Calamar gigante"],
+                correcta: 1
+            },
+            {
+                pregunta: "¿Cuál es el país más poblado del mundo?",
+                respuestas: ["Estados Unidos", "India", "China", "Rusia"],
+                correcta: 2
+            },
+            {
+                pregunta: "¿Cuál es el idioma más hablado en el mundo?",
+                respuestas: ["Inglés", "Mandarín", "Español", "Hindi"],
+                correcta: 1
+            },
+            {
+                pregunta: "¿Cuál es el edificio más alto del mundo?",
+                respuestas: ["Torre Eiffel", "Burj Khalifa", "Torre de Shanghai", "Abraj Al-Bait"],
+                correcta: 1
+            },
+            {
+                pregunta: "¿Cuál es el océano más grande del mundo?",
+                respuestas: ["Atlántico", "Índico", "Ártico", "Pacífico"],
+                correcta: 3
+            },
+            {
+                pregunta: "¿Cuál es el continente más grande del mundo?",
+                respuestas: ["África", "América", "Asia", "Europa"],
+                correcta: 2
+            },
+            {
+                pregunta: "¿Cuál es el planeta más cercano al sol?",
+                respuestas: ["Venus", "Marte", "Mercurio", "Júpiter"],
+                correcta: 2
+            },
+            {
+                pregunta: "¿Cuál es el río más largo de América?",
+                respuestas: ["Amazonas", "Mississippi", "Orinoco", "Paraná"],
+                correcta: 0
+            },
+            {
+                pregunta: "¿Cuál es la montaña más alta del mundo?",
+                respuestas: ["Kilimanjaro", "Everest", "K2", "Aconcagua"],
+                correcta: 1
+            },
+            {
+                pregunta: "¿Cuál es el país con más idiomas hablados?",
+                respuestas: ["India", "Papúa Nueva Guinea", "Indonesia", "Nigeria"],
+                correcta: 1
+            }
+
+            
+        ];
+
+        var preguntaActual = 0;
+
+        function mostrarPregunta() {
+            var pregunta = preguntas[preguntaActual];
+            document.getElementById('pregunta').textContent = pregunta.pregunta;
+            for (var i = 0; i < pregunta.respuestas.length; i++) {
+                var boton = document.getElementById('respuesta' + (i + 1));
+                boton.textContent = pregunta.respuestas[i];
+                boton.onclick = (function(i) {
+                    return function() {
+                        if (i === pregunta.correcta) {
+                            alert("¡Correcto!");
+                            preguntaActual++;
+                            if (preguntaActual < preguntas.length) {
+                                mostrarPregunta();
+                            } else {
+                                alert("¡Has ganado el juego!");
+                            }
+                        } else {
+                            alert("Lo siento, esa respuesta es incorrecta.");
+                        }
+                    };
+                })(i);
+            }
+        }
+
+        mostrarPregunta();
+    </script>
+</body>
+</html>

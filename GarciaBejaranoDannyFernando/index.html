@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>¿Quién quiere ser millonario?</h1>
+    <P>Para este juego debes dar las respuestas en MAYÚSCULA, y si aciertas, cada
+        cada pregunta dará 1 punto</P> <br>
+
+    <h3>Pregunta #: <span id="contadorPregunta">1</span></h3>
+    <p id="puntos">Puntos totales: <span id="puntosTotales">0</span> </p> <br>
+    <p id="pregunta">Pregunta:</p>
+    <div id="opciones"></div>
+    <input type="text" id="respuesta" maxlength="1">
+    <input type="submit" value="Enviar" onclick="Contestar()"> <br>
+    <button onclick="ayuda50_50()">50/50</button> <br>
+    <button onclick="puntuacionDoble()">Doble Puntuación</button> <br>
+    <button onclick="ayudaPista()">Pista</button> <br>
+
+
+    <script>
+
+        var cuestionario = [
+            {
+                pregunta: "¿Cuál es la capital de Francia?",
+                opciones: [
+                    "A: Londres",
+                    "B: París",
+                    "C: Madrid",
+                    "D: Berlín"
+                ],
+                respuesta: "B",
+                doblePuntuacion: false,
+                Op50_50: ["A. Londres", "B. Paris"],
+                Pista: "La ciudad es conocida por la Torre Eiffel"
+            },
+            {
+                pregunta: "¿Cuál es la capital de Argentina?",
+                opciones: [
+                    "A: Londres",
+                    "B: Buenos aires",
+                    "C: Madrid",
+                    "D: Monte video"
+                ],
+                respuesta: "B",
+                doblePuntuacion: false,
+                Op50_50: ["D. Monte video", "B. Buenos aires"],
+                Pista: "La ciudad es conocida por la Torre Eiffel"
+            },
+            {
+                pregunta: "¿En qué año se descubrió América?",
+                opciones: [
+                    "A: 1492",
+                    "B: 1776",
+                    "C: 1215",
+                    "D: 1543"
+                ],
+                respuesta: "A",
+                doblePuntuacion: false,
+                Op50_50: ["A. 1492", "B. 1776"],
+                Pista: "Fue el mismo año en que Colón llegó al Nuevo Mundo"
+            },
+            {
+                pregunta: "¿Cuál es el océano más grande del mundo?",
+                opciones: [
+                    "A: Océano Atlántico",
+                    "B: Océano Índico",
+                    "C: Océano Ártico",
+                    "D: Océano Pacífico"
+                ],
+                respuesta: "D",
+                doblePuntuacion: false,
+                Op50_50: ["C. Océano Ártico", "D. Océano Pacífico"],
+                Pista: "Es el océano más profundo y extenso de la Tierra"
+            },
+            {
+                pregunta: "¿Cuál es la montaña más alta del mundo?",
+                opciones: [
+                    "A: Montaña Everest",
+                    "B: Montaña Kilimanjaro",
+                    "C: Montaña Aconcagua",
+                    "D: Montaña Denali"
+                ],
+                respuesta: "A",
+                doblePuntuacion: false,
+                Op50_50: ["A. Montaña Everest", "B. Montaña Kilimanjaro"],
+                Pista: "Ubicada en la cordillera del Himalaya, en Asia"
+            },
+            {
+                pregunta: "¿Quién escribió 'Cien años de soledad'?",
+                opciones: [
+                    "A: Gabriel García Márquez",
+                    "B: Mario Vargas Llosa",
+                    "C: Julio Cortázar",
+                    "D: Isabel Allende"
+                ],
+                respuesta: "A",
+                "doblePuntuacion": false,
+                "Op50_50": ["A. Gabriel García Márquez", "B. Mario Vargas Llosa"],
+                "Pista": "Autor colombiano y premio Nobel de Literatura en 1982"
+            },
+            {
+                pregunta: "¿Cuál es el río más largo del mundo?",
+                opciones: [
+                    "A: Río Amazonas",
+                    "B: Río Nilo",
+                    "C: Río Yangtsé",
+                    "D: Río Mississippi"
+                ],
+                respuesta: "A",
+                doblePuntuacion: false,
+                Op50_50: ["A. Río Amazonas", "B. Río Nilo"],
+                Pista: "Fluye a través de América del Sur y desemboca en el Atlántico"
+            },
+            {
+                pregunta: "¿En qué año tuvo lugar la Revolución Rusa?",
+                opciones: [
+                    "A: 1905",
+                    "B: 1917",
+                    "C: 1923",
+                    "D: 1936"
+                ],
+                respuesta: "B",
+                doblePuntuacion: false,
+                Op50_50: ["B. 1917", "C. 1923"],
+                Pista: "Fue un acontecimiento clave durante la Primera Guerra Mundial"
+            },
+            {
+                pregunta: "¿Cuál es la capital de Japón?",
+                opciones: [
+                    "A: Pekín",
+                    "B: Tokio",
+                    "C: Seúl",
+                    "D: Bangkok"
+                ],
+                respuesta: "B",
+                doblePuntuacion: false,
+                Op50_50: ["B. Tokio", "C. Seúl"],
+                Pista: "Es una de las ciudades más pobladas del mundo"
+            },
+            {
+                pregunta: "¿Quién fue el primer presidente de Estados Unidos?",
+                opciones: [
+                    "A: Thomas Jefferson",
+                    "B: John Adams",
+                    "C: George Washington",
+                    "D: Benjamin Franklin"
+                ],
+                respuesta: "C",
+                "doblePuntuacion": false,
+                "Op50_50": ["C. George Washington", "D. Benjamin Franklin"],
+                "Pista": "Líder militar y político durante la Revolución Americana"
+            }
+        ];
+
+        var ayudas = {
+            "50_50": false,
+            "doblePuntuacion": false,
+            "Pista": false
+        };
+
+        function mostrarPregunta(p) {
+
+            document.getElementById("pregunta").textContent = cuestionario[p].pregunta;
+            var opciones = "Opciones: ";
+            for (var i = 0; i < cuestionario[p].opciones.length; i++) {
+                opciones += cuestionario[p].opciones[i] + " ";
+            }
+            document.getElementById("opciones").textContent = opciones;
+        }
+
+        function Contestar() {
+            if (juegoTerminado) {
+                alert("El juego ya ha terminado.");
+                return;
+            }
+            var contadorPregunta = parseInt(document.getElementById("contadorPregunta").textContent) - 1;
+            var respuesta = document.getElementById("respuesta").value;
+            var mensaje = "";
+            if (respuesta == cuestionario[contadorPregunta].respuesta) {
+                mensaje = "Correcto";
+                sumarPuntos();
+            } else {
+                mensaje = "Incorrecto";
+            }
+            if (contadorPregunta < cuestionario.length - 1) {
+                cambiarPregunta();
+                mostrarPregunta(contadorPregunta + 1);
+            } else {
+                mensaje = "¡Juego terminado! Tus puntos totales fueron: " + document.getElementById("puntosTotales").textContent;
+                juegoTerminado = true;
+            }
+            alert(mensaje);
+        } mostrarPregunta(0);
+
+        function ayudaPista() { //Se da una pista de la respuesta correcta
+            if (!ayudas["Pista"]) {
+                ayudas["Pista"] = true;
+                var preguntaActual = cuestionario[parseInt(document.getElementById("contadorPregunta").textContent) - 1];
+                alert("Pista: " + preguntaActual.Pista);
+            } else {
+                alert("No tienes mas esta ayuda.");
+            }
+        }
+
+        function preAleatorio(array) { //Se da la respuesta en aleatorio, no en orden
+            array.sort(() => Math.random() - 0.5);
+        } preAleatorio(cuestionario);
+
+        function ayuda50_50() { //Esta opcion dará 1 respuesta correcta y 1 incorrecta
+            if (!ayudas["50_50"]) {
+                ayudas["50_50"] = true;
+                var preguntaActual = cuestionario[parseInt(document.getElementById("contadorPregunta").textContent) - 1];
+                preguntaActual.opciones = preguntaActual.Op50_50;
+                mostrarPregunta(parseInt(document.getElementById("contadorPregunta").textContent) - 1);
+            } else {
+                alert("No tienes mas esta ayuda.");
+            }
+        }
+
+        var doblePuntuacion = false;
+        function puntuacionDoble() { //Esta opcion suma 2 puntos en vez de 1
+            if (!ayudas["puntuacionDoble"]) {
+                ayudas["puntuacionDoble"] = true;
+                doblePuntuacion = true;
+            } else {
+                alert("No tienes mas esta ayuda.");
+            }
+        }
+
+        var juegoTerminado = false; //Para que no siga sumando puntos al terminar el juego
+
+        function sumarPuntos() {
+            var puntos = parseInt(document.getElementById("puntosTotales").textContent);
+            puntos += doblePuntuacion ? 2 : 1;
+            document.getElementById("puntosTotales").textContent = puntos;
+            doblePuntuacion = false;
+        }
+
+        function cambiarPregunta() {
+            var numeroPregunta = parseInt(document.getElementById("contadorPregunta").textContent);
+            numeroPregunta++;
+            document.getElementById("contadorPregunta").textContent = numeroPregunta;
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quién Quiere Ser Millonario?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        #options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 15px 0;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #result {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #score {
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¿Quién Quiere Ser Millonario?</h1>
+        <div id="question"></div>
+        <div id="options"></div>
+        <button id="hintButton" onclick="giveHint()">Obtener Pista</button>
+        <button id="doublePointsButton" onclick="doublePoints()">Doble Puntuación</button>
+        <button id="nextButton">Siguiente Pregunta</button>
+        <div id="result"></div>
+        <div id="score"></div>
+    </div>
+
+    <script>
+        // Preguntas y respuestas
+        const preguntas = [
+            {
+                pregunta: "¿Cuál es la capital de Francia?",
+                opciones: ["a) Madrid", "b) París", "c) Berlín", "d) Londres"],
+                respuestaCorrecta: "b",
+                pista: "La respuesta correcta empieza con la letra 'P'.",
+                puntos: 1
+            },
+            {
+                pregunta: "¿En qué año se descubrió América?",
+                opciones: ["a) 1492", "b) 1776", "c) 1812", "d) 1914"],
+                respuestaCorrecta: "a",
+                pista: "El año coincide con la llegada de Cristóbal Colón al continente americano.",
+                puntos: 2
+            },
+            {
+                pregunta: "¿Quién escribió 'Don Quijote de la Mancha'?",
+                opciones: ["a) Miguel de Cervantes", "b) Gabriel García Márquez", "c) Pablo Neruda", "d) Federico García Lorca"],
+                respuestaCorrecta: "a",
+                pista: "Es considerado uno de los mejores escritores en lengua española.",
+                puntos: 1
+            },
+            {
+                pregunta: "¿Cuál es el río más largo del mundo?",
+                opciones: ["a) Amazonas", "b) Nilo", "c) Yangtsé", "d) Misisipi"],
+                respuestaCorrecta: "a",
+                pista: "Es el hogar de una gran variedad de especies de flora y fauna.",
+                puntos: 2
+            },
+            {
+                pregunta: "¿Quién pintó la Mona Lisa?",
+                opciones: ["a) Leonardo da Vinci", "b) Pablo Picasso", "c) Vincent van Gogh", "d) Michelangelo Buonarroti"],
+                respuestaCorrecta: "a",
+                pista: "Es una de las obras más famosas del Renacimiento italiano.",
+                puntos: 1
+            },
+            {
+                pregunta: "¿Quién fue el primer presidente de Estados Unidos?",
+                opciones: ["a) George Washington", "b) Thomas Jefferson", "c) Abraham Lincoln", "d) John Adams"],
+                respuestaCorrecta: "a",
+                pista: "Lideró el país durante la Guerra de Independencia.",
+                puntos: 2
+            },
+            {
+                pregunta: "¿Cuál es el planeta más grande del sistema solar?",
+                opciones: ["a) Júpiter", "b) Saturno", "c) Urano", "d) Neptuno"],
+                respuestaCorrecta: "a",
+                pista: "Tiene al menos 79 lunas conocidas.",
+                puntos: 1
+            },
+            {
+                pregunta: "¿Cuál es el hueso más largo del cuerpo humano?",
+                opciones: ["a) Fémur", "b) Tibia", "c) Húmero", "d) Fíbula"],
+                respuestaCorrecta: "a",
+                pista: "Es el hueso del muslo.",
+                puntos: 2
+            },
+            {
+                pregunta: "¿Cuál es el símbolo químico del agua?",
+                opciones: ["a) H2O", "b) CO2", "c) NaCl", "d) O2"],
+                respuestaCorrecta: "a",
+                pista: "Está formada por dos átomos de hidrógeno y uno de oxígeno.",
+                puntos: 1
+            },
+            {
+                pregunta: "¿Cuál es la capital de Italia?",
+                opciones: ["a) Madrid", "b) Roma", "c) París", "d) Berlín"],
+                respuestaCorrecta: "b",
+                pista: "Es conocida como la Ciudad Eterna.",
+                puntos: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let puntos = 0;
+        let preguntasCorrectas = 0;
+        let preguntasIncorrectas = 0;
+        let hintUsed = false;
+        let doublePointsUsed = false;
+
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const nextButton = document.getElementById("nextButton");
+        const hintButton = document.getElementById("hintButton");
+        const doublePointsButton = document.getElementById("doublePointsButton");
+        const resultElement = document.getElementById("result");
+        const scoreElement = document.getElementById("score");
+
+        function displayQuestion() {
+            const currentQuestion = preguntas[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.pregunta;
+
+            optionsElement.innerHTML = "";
+            currentQuestion.opciones.forEach((opcion, index) => {
+                const button = document.createElement("button");
+                button.textContent = opcion;
+                button.setAttribute("data-index", index);
+                button.addEventListener("click", handleAnswer);
+                optionsElement.appendChild(button);
+            });
+
+            hintButton.disabled = hintUsed; // Deshabilita el botón de pista si ya se usó
+            doublePointsButton.disabled = doublePointsUsed; // Deshabilita el botón de doble puntuación si ya se usó
+        }
+
+        function handleAnswer(event) {
+            const selectedOptionIndex = event.target.getAttribute("data-index");
+            const selectedOption = preguntas[currentQuestionIndex].opciones[selectedOptionIndex];
+            const correctAnswer = preguntas[currentQuestionIndex].respuestaCorrecta;
+            const puntosPregunta = preguntas[currentQuestionIndex].puntos;
+
+            let puntosGanados = doublePointsUsed ? puntosPregunta * 2 : puntosPregunta; // Determina si la respuesta debe otorgar el doble de puntos
+
+            if (selectedOption.charAt(0) === correctAnswer) {
+                puntos += puntosGanados;
+                preguntasCorrectas++;
+                resultElement.textContent = `¡Respuesta correcta! Ganaste ${puntosGanados} puntos.`;
+            } else {
+                preguntasIncorrectas++;
+                resultElement.textContent = "Respuesta incorrecta.";
+            }
+
+            updateScore();
+            nextButton.disabled = false;
+            optionsElement.querySelectorAll("button").forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        function giveHint() {
+            const currentQuestion = preguntas[currentQuestionIndex];
+            alert(currentQuestion.pista);
+            hintUsed = true;
+            hintButton.disabled = true;
+        }
+
+        function doublePoints() {
+            doublePointsUsed = true;
+            doublePointsButton.disabled = true;
+        }
+
+        nextButton.addEventListener("click", () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < preguntas.length) {
+                displayQuestion();
+                resultElement.textContent = "";
+                nextButton.disabled = true;
+                optionsElement.querySelectorAll("button").forEach(button => {
+                    button.disabled = false;
+                });
+                hintUsed = false; // Reinicia la variable para habilitar el botón de pista para la siguiente pregunta
+                doublePointsUsed = false; // Reinicia la variable para habilitar el botón de doble puntuación para la siguiente pregunta
+                hintButton.disabled = false; // Habilita el botón de pista para la siguiente pregunta
+                doublePointsButton.disabled = false; // Habilita el botón de doble puntuación para la siguiente pregunta
+            } else {
+                showFinalResult();
+            }
+        });
+
+        function showFinalResult() {
+            questionElement.textContent = "";
+            optionsElement.innerHTML = "";
+            nextButton.style.display = "none";
+            hintButton.style.display = "none";
+            doublePointsButton.style.display = "none";
+            resultElement.textContent = `Fin del juego. Puntos totales: ${puntos}`;
+        }
+
+        function updateScore() {
+            scoreElement.textContent = `Puntos acumulados: ${puntos} | Preguntas correctas: ${preguntasCorrectas} | Preguntas incorrectas: ${preguntasIncorrectas}`;
+        }
+
+        displayQuestion();
+        updateScore();
+    </script>
+</body>
+</html>
